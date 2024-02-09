@@ -1,43 +1,70 @@
-import{ Enemy } from "./ui/entities.js";
-import{ Background } from "./ui/basic ui.js";
+import { Enemy } from "./ui/entities.js";
+import { Background } from "./ui/basic ui.js";
 
-const BattleBus = new Enemy("BattleBus", 50, 1, 0, 50, 100 );
-const fnkid = new Enemy("BattleBus", 50, 1, 2, 50, 300 );
 const background = new Background();
 
+const enemies = [];
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 // const battleBus = new Image();
 const gameLoop = () => {
- clear();
- update();
- render();
- fps();
- window.requestAnimationFrame(gameLoop);
-}
+  clear();
+  update();
+  render();
+  fps();
+  window.requestAnimationFrame(gameLoop);
+};
 const clear = () => {
-    canvas.width = 1280;
-    canvas.height = 720;
-background.draw(ctx);
-}
+  canvas.width = 1280;
+  canvas.height = 720;
+  background.draw(ctx);
+};
 
 const update = () => {
-    BattleBus.update();
-    fnkid.update();
-}
+    enemies.map((a) => {
+        a.update();
+    })
+};
 const render = () => {
-    BattleBus.draw(ctx);
-    fnkid.draw(ctx);
-}
-const fps = () => {}
+  enemies.map((a) => {
+    a.draw(ctx);
+  });
+};
+const fps = () => {};
 
-window.onload = () => {
-    window.requestAnimationFrame(gameLoop);
-}
+const loadData = async () => {
+  const entitiesFile = await fetch("./res/data/entities.json");
+  const data = await entitiesFile.json();
+  Enemy.entitiesData = data;
+};
+
+const genEnemies = () => {
+  Enemy.entitiesData.map((a) => {
+    enemies.push(
+      new Enemy(
+        a.name,
+        a.hp,
+        a.dmg,
+        a.imagePath,
+        a.width,
+        a.height,
+        a.velocity,
+        a.type
+      )
+    );
+  });
+};
+
+window.onload = async () => {
+  await loadData();
+  console.log(Enemy.entitiesData);
+  genEnemies();
+  console.log(enemies);
+  window.requestAnimationFrame(gameLoop);
+};
 
 // battleBus.src = "./res/img/battle_bus.png";
-
 
 // let bossPaths = [
 //     "./res/img/battle_bus.png",
@@ -61,7 +88,6 @@ window.onload = () => {
 // ctx.strokeRect(400, 200, 100, 200);
 // ctx.strokeRect(100, 200, 100, 200);
 
-
 // ctx.strokeStyle = "black";
 
 // ctx.strokeStyle = "black"
@@ -69,13 +95,13 @@ window.onload = () => {
 // ctx.moveTo(800, 50);
 // ctx.lineTo(800, 200);
 // ctx.stroke();
- 
+
 // ctx.strokeStyle = "black"
 // ctx.beginPath();
 // ctx.moveTo(950, 50);
 // ctx.lineTo(950, 200);
 // ctx.stroke();
- 
+
 // ctx.strokeStyle = "black"
 // ctx.beginPath();
 // ctx.arc(875, 250, 50, 0, 1 * Math.PI);
@@ -123,7 +149,6 @@ window.onload = () => {
 //             battleBus.src = bossPaths [4];
 //             bossPaths[3] = bossPaths [0];
 //         }
-
 
 //         bus.x+= bus.xVelocity;
 //         bus.y += bus.yVelocity;

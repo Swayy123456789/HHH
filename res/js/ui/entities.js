@@ -1,27 +1,36 @@
 export class Enemy {
-  constructor(name, hp, dmg, type, x, y) {
+
+static entitiesData;
+
+  constructor(name, hp, dmg, imagePath, width, height, velocity, type) {
     this.name = name;
     this.hp = hp;
     this.dmg = dmg;
+
     this.img = new Image();
-    this.setType(type);
-    this.img.src = this.path;
+   this.imagePath = imagePath
+    this.img.src = this.imagePath;
     this.position = {
-      x: x,
-      y: y,
+      x: 0,
+      y: 0,
     };
+    if (type === "ground") {
+      this.position.y = 450;
+    }
     this.ratio = 1;
     this.size = {
-      width: 200 * this.ratio,
-      height: 200 * this.ratio,
+      width: width * this.ratio,
+      height: width * this.ratio,
     };
     this.velocity = {
-      x: 4,
-      y: 0,
-    }
-  }
+      x: velocity,
+     
+        };
+    this.type = type;
+  } 
 
   draw(ctx) {
+  
    ctx.drawImage(
      this.img,
      this.position.x,
@@ -31,16 +40,7 @@ export class Enemy {
    );
  }
 
-  setType(type) {
-    const paths = [
-      "./res/img/enemies/battle_bus.png",
-      "./res/img/enemies/BOSS.png",
-      "./res/img/enemies/fnkid.png",
-      "./res/img/enemies/kevin.png",
-      "./res/img/enemies/mecha.png",
-    ];
-    this.path = paths[type];
-  }
+ 
 
   update() {
 this.move();
